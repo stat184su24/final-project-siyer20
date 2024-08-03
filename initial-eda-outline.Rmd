@@ -24,11 +24,45 @@ I want to investigate the correlation between government makeup (as in political
 
 Include R code and written explanation to import your **TWO** data sets.
 
+I want to create a dataset that has a:the number of bills introduces in the most recent legal session of each state; b: the bills passed in the most recent legal session per state; and c: the ratio of passed bills to bills introduced per state.
+
+I also want a separate dataset of the party makeup for each state in their most recent session. Each government consists of a house of representatives, state senate, and state governors. Therefore, there are 3 components to party makeup.
+
+After looking online I collcted data myself from two different sources: the first from LegiScan, and the second from Bulbapedia. Some states do not have their data easily accessible online so they are not included in the dataset.
+
+```{r}
+govtMakeup <- read.table(
+file = "/Users/sangeetaiyer/Desktop/stat/184/govtmakeup.csv",
+header = TRUE,
+sep = ","
+)
+
+billPassage <- read.table(
+file = "/Users/sangeetaiyer/Desktop/stat/184/billpassage.csv",
+header = TRUE,
+sep = ","
+)
+```
+
 #### Data Wrangling 
 
 Include R code and written explanation for wangling your data (you can make multiple wrangled data sets). 
 
+I joined both the datasets I made into one using an inner join. I then got rid of a couple rows because of outliers, so that they did not skew the data. I then got the top ten states with the highest rate of passage.
+```{r}
+allData <-
+  billPassage %>%
+  inner_join( govtMakeup )
 
+allData <- allData[-c(39,32,17), ]
+
+allData %>%
+  group_by(rate.of.passage)%>%
+  summarize(abbs) %>%
+  arrange(desc(rate.of.passage))
+
+topTen <- allData %>%
+  filter(rate.of.passage >= 0.4524)
 
 
 ## Data Visualization

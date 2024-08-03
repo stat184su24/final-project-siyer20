@@ -1,14 +1,20 @@
 ---
 title: "Initial EDA Basic Outline"
-author: "Name of Student"
+author: "Sangeeta Iyer"
 output: html_notebook
 ---
-
+```
+# load necessary packages
+library(tidyverse)
+library(mosaic)
+library(esquisse)
+```
 This is an outline for your Initial EDA. You can follow this outline, or you can modify it as you see fit. Do what works best for your project. 
 
 ## Research Question 
 
 State your specific research question and why it is interesting. 
+I want to investigate the correlation between government makeup (as in political party) of each state and rate of bill passage. This is interesting because state legislatures are often overlooked, yet the bills they pass affect their citizens' lives more potently. Especially in the recent American political climate, as the power of the national government is being limited, state legislatures have more control over hot button topics, such as abortion access. Therefore, I want to look into whether or not the makeup of the state government has any impact on the rate of bill passage, as this could influence strategic campaign decisions.
 
 
 

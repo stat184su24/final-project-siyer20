@@ -71,11 +71,40 @@ topTen <- allData %>%
 
 Include R code to make one data visualization (I would encourage you to use 3 or more variables). Include a brief written description of what your graph shows. Is this graph helpful in answering your research question? If it is helpful, will you need to add/modify anything in this graph in the final report? 
 
+```{r}
+
+ggplot(topTen) +
+  aes(x = abbs, y = rate.of.passage, fill = govt.makeup) +
+  geom_col() +
+  scale_fill_hue(direction = 1) +
+  theme_minimal()
+
+```
+
+Observations:
+The highest rate of passage among the states is Colorado, which is a fully democratic makeup. The lowest seems to be AL, which is of a fully republican makeup. The makeups of these governments are pretty evenly split, with only one split party government being in the top ten. This indicates that split party governments are less effective at passing bills than one party governments. 
+
 #### Plot 2
 
 Include R code to make one data visualization (I would encourage you to use 3 or more variables). Include a brief written description of what your graph shows. Is this graph helpful in answering your research question? If it is helpful, will you need to add/modify anything in this graph in the final report? 
 
+```{r}
+
+ggplot(allData) +
+  aes(x = rate.of.passage, fill = govt.makeup) +
+  geom_density(alpha = 0.7) +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() +
+  facet_wrap(vars(Session.Years))
+
+
+
+```
+Observations:
+It seems that, despite session year, governments with RRR makeups tend to have a higher density of high rate of passage than other govt types. In the 2021 session, there is a big spike with RRD governments. Also in the 2021 session, DDD governments have a higher density of a rate of passage about 0.6 than RRR governments, indicating that DDD governments perform better in this session than the 2023 one.
 
 ## Conclusion
 
 Include your initial intuition as to what the answer to your research question is using the data sets and visualizations you created. 
+I think that I will find that there is a correlation between one party governments and rate of passage, in that if a government that is not split will pass more bills.
+

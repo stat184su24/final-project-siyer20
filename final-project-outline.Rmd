@@ -156,12 +156,12 @@ Include R code and written explanation for your data visualization(s) with at le
 
 I first want to look at how much each govt makeup appears in the datasets.
 ```{r}
-#boxplot for top ten staes
+#bar chart for top ten staes
 ggplot(data = topTen, mapping = aes(x = govt.makeup)) +
   geom_bar(fill = "purple") +
   theme_bw()
 
-#box plot for all states
+#bar chart for all states
 ggplot(data = allData, mapping = aes(x = govt.makeup)) +
   geom_bar(fill = "navy") +
   theme_bw()
@@ -170,6 +170,7 @@ In the top ten states, it appears that totally unified governments make up the m
 
 Then, I want to look at an overlaid general density plot for rate of passage.
 ```{r}
+#overlaid density plot
 ggplot() + 
   geom_density(data = allData, mapping = aes(x = rate.of.passage, colour = govt.makeup), alpha = 0.7) +
   geom_density(data = topTen, mapping = aes(x = rate.of.passage, fill = govt.makeup), alpha = 0.1) +
@@ -181,6 +182,7 @@ For the topTen graph, the DDD governments create a cosine looking graph, indicat
 
 I can also remake the density graph with session years to see if they play any part.
 ```{r}
+#overlaid density graph with facet of session years
 ggplot() + 
   geom_density(data = allData, mapping = aes(x = rate.of.passage, colour = govt.makeup), alpha = 0.7) +
   geom_density(data = topTen, mapping = aes(x = rate.of.passage, fill = govt.makeup), alpha = 0.1) +

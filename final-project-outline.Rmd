@@ -1,15 +1,25 @@
 ---
-title: "Final Project Basic Outline"
-author: "Student name"
+title: "Final Project"
+author: "Sangeeta"
 output: html_notebook
 ---
 
 This is an outline for your final project. You can follow this outline, or you can modify it as you see fit. Do what works best for your project. 
+```{r}
+#libraries
+library(tidyverse)
+library(mosaic)
+library(esquisse)
+```
 
 ## Research Question 
 
-State your general specific question and why it is interesting. 
+My Research Question is:
+Does the party makeup of state legislatures and their respective governorships have a relationship with the efficacy of these state governments?
 
+In the United States of America, the two political parties that dominate the government are Democrats and Republicans. Since the US is a democracy, the citizens of this country vote representatives into local, state, and national offices to run their communities, both small and large. Due to the large variety of political positions, the parties often find themselves dividing resources to support the candidates of these heated races. The most polarizing and intense race often occurs every four years for the President of the United States. However, though this is the highest office one can hold, people often question the impact this actually has one one's day to day life. This is because while the national offices can affect everybody in the country, states actually wield considerable power to govern themselves. With the recent trend in the Supreme Court, it seems that states are gaining more and more power to make decisions about critical issues such as abortion access and marriage equality on their own. This means that state races will become areas of higher focus, and therefore it is critical to gain a deeper understanding into their machinations. As a result, I want to look into how party splits affect the efficiacy of state governments.
+
+Essentially, I wish to create my own State Legislative Effectiveness Score(SLES) to determine if unified governments are more or less effective than governments that are forced to compromise and share power. A good way to understand if legislative bodies are working efficiently is by determining how many bills are passed in each cycle, as it shows the ability of a government to implement and enact laws. Much varies state by state, ranging from legislative processes to even the structure of the legislative bodies, so my study will have to take this into account. I will expand on this process more in the Data Intake section.
 
 
 ## Data Processing 
@@ -18,20 +28,177 @@ State your general specific question and why it is interesting.
 
 Include R code and a written explanation to import your **TWO** data sets.
 
+To answer my research quesiton, I first need to define my metric for success to determine an effective government. Each legislative body regardless of state only works during a period of time called a "legislative session." During this period, bills are introduced, amended and passed. If bills that were introduced during a session are not passed or amended by the end of it, they cannot be passed unless reintroduced in a later session. Therefore, I decided to have my metric be the ratio of passed bills/introduced bill by state.
+
+However, the timing of legislative sessions also vary by state, which needs to be taken into account. I decided to take data from the last complete legislative session for each state. The party makeup of legislative bodies changes frequently, as representatives, senators, and governments have different term lengths. I decided to use the session years as a time marker for when to collect party makeup data. Some states had election years during the most recent session, however the party makeup stayed constant. Each state has 3 components to their legislative bodies: state house of representatives, state senate, and state governor. Each component can either be democratically aligned, or republican aligned. Therefore a state can be flagged four different ways in this dataset: DDD, DDR, DRR, RRR. I am not specifying or weighting a specific component more than another because I am simply looking at split governments versus unified ones.
+
+I sourced my data from two sources: LegiScan and Bulbapedia. LegiScan has a lot of data on both national and congressional sessions, and I used this source to determine how many bills were introduced versus passed by state. However their data is undownloadable and difficult to scrape unless you pay for a subscription, so I had to collect my data manually. I input it into an excel sheet, which I then downloaded as a CSV file. I used Bulbapedia to gather information on state government party makeup. Bulbapedia has a page for each state, and on a state's page lists the party makeup of that government for the last decade or so. I aggregated that information into another excel sheet.
+
+At the end of this process I ended up with two separate datasets. The first one contains information related to the rate of passage. It has variables: State, State abbreviations, Session Years, bills introduced, bills passed, and rate of passage. The second has information related to government party makeup, with variables: State, state abbreviations, Session Years, Govt makeup.
+
+It is important to note that some states had differences in legislative structure/access to data that made them difficult to include in the dataset, so they were excluded. These states are Ohio, Arkansas, and Massachusetts.
+
+
+```{r}
+#loading in data
+billPassage <- read.table(
+file = "/Users/sangeetaiyer/Desktop/stat/184/billpassage.csv",
+header = TRUE,
+sep = ","
+)
+
+billPassage
+
+govtMakeup <- read.table(
+file = "/Users/sangeetaiyer/Desktop/stat/184/govtmakeup.csv",
+header = TRUE,
+sep = ","
+)
+
+govtMakeup
+```
+
 #### Data Wrangling 
 
 Include R code and written explanation for wangling your data (you can make multiple wrangled data sets). 
 
+First, I inspected both datasets, and then joined them using an inner join.
+```{r}
+## Summary and structure of data
+summary(billPassage)
+
+str(billPassage)
 
 
+## Summary and structure of data
+summary(govtMakeup)
+
+str(govtMakeup)
+
+
+allData <-
+  billPassage %>%
+  inner_join( govtMakeup)
+```
+
+Then, I inspected the data, and used graphs to look for outliers.
+
+```{r}
+## Summary and structure of data
+summary(allData)
+
+str(allData)
+
+allData
+```
+
+```{r}
+
+ggplot(data = allData, mapping = aes(x = govt.makeup, y = rate.of.passage, fill = govt.makeup)) +
+  geom_boxplot(na.rm = TRUE, linewidth = 0.2) +
+  theme_bw() 
+
+ggplot(data = allData,mapping = aes(x = Session.Years, y = rate.of.passage, fill = Session.Years)) +
+  geom_boxplot(na.rm = TRUE, linewidth = 0.2) +
+  theme_bw()
+```
+Observations: From these inital box plots, it looks like there may be a few outliers in our dataset which may skew our data and affect our conclusion. After some inspection, I see that there is only one state whose session year occurs from 2022-2023. I got rid of the 2022-2023 state and the RRD outliers, and remade the graphs.
+
+```{r}
+allData <- allData[-c(39,32,17), ]
+
+ggplot(data = allData, mapping = aes(x = govt.makeup, y = rate.of.passage, fill = govt.makeup)) +
+  geom_boxplot(na.rm = TRUE, linewidth = 0.2) +
+  theme_bw() 
+
+ggplot(data = allData,mapping = aes(x = Session.Years, y = rate.of.passage, fill = Session.Years)) +
+  geom_boxplot(na.rm = TRUE, linewidth = 0.2) +
+  theme_bw()
+```
+The outliers are gone! This is also a good first look at our data. Just from these box plots, I can see that governments with an RRD split are very ineffective at passing laws. The governments with the highest passing rates are the united party governments, with DDD seeming to be more effective than RRR. It's interesting that DDR split governments seem significantly more effective than RRD governments.
+
+I also want to create a new topTen dataset which has the top ten states with the highest rate of passage.
+
+```{r}
+allData %>%
+  group_by(rate.of.passage)%>%
+  summarize(abbs) %>%
+  arrange(desc(rate.of.passage))
+
+topTen <- allData %>%
+  filter(rate.of.passage >= 0.4524) %>%
+  arrange(desc(rate.of.passage))
+
+topTen
+```
 
 ## Data Visualization
 
 Include R code and written explanation for your data visualization(s) with at least 3 variables. You must have **at least** one graph. You may have more than one (I would encourage you to have more than one). 
 
+I first want to look at how much each govt makeup appears in the datasets.
+```{r}
+ggplot(data = topTen, mapping = aes(x = govt.makeup)) +
+  geom_bar(fill = "purple") +
+  theme_bw()
+
+ggplot(data = allData, mapping = aes(x = govt.makeup)) +
+  geom_bar(fill = "navy") +
+  theme_bw()
+```
+In the top ten states, it appears that totally unified governments make up the majority. It's interesting that in the allData bar chart, there are more RRD governments than DDR governments, and yet no RRD governments in the top ten. Otherwise, the makeup of the top ten correlates with the makeup of all the data.
+
+Then, I want to look at general density plots for all of the data and then the topTen dataset.
+```{r}
+ggplot(allData) +
+  aes(x = rate.of.passage, colour = govt.makeup) +
+  geom_density(alpha = 0.7) +
+  scale_fill_hue(direction = 1) +
+  theme_minimal()
+
+ggplot(topTen) +
+  aes(x = rate.of.passage, colour = govt.makeup) +
+  geom_density(alpha = 0.7) +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() 
+
+```
+In the allData graph, there is a large spike that implies that RRD governments mostly have a ~0.13 passage rate. This graph also shows that, at the upper end of passage rates, there are more DDD governments. Every other type tapers down. There is a slight bump around the 0.15 mark for RRR governments, indicating that more of them perform at that level. 
+For the topTen graph, the DDD governments create a cosine looking graph, indicating that they perform either extremely well or extremely poorly. The RRR government is the opposite, as most of them perform middlingly with a drop off towards the end, indicating that no RRR government outperforms a DDD government.
+
+I can also remake the density graphs with session years to see if they play any part.
+```{r}
+ggplot(allData) +
+  aes(x = rate.of.passage, colour = govt.makeup) +
+  geom_density(alpha = 0.7) +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() +
+  facet_wrap(vars(Session.Years))
+
+ggplot(topTen) +
+  aes(x = rate.of.passage, colour = govt.makeup) +
+  geom_density(alpha = 0.7) +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() +
+  facet_wrap(vars(Session.Years))
+```
+In the allData graph, the 2021-2022 facet looks very similar to the graph from before. The 2023 facet is interesting, in that only unified governments are in it. RRR governments in 2023 generally seem to perform poorly as there are spikes in the 0.05-0.15 range, while the DDD governments are more spread out. At the higher end of the passage rates, DDD governments do seem to com out on top.
+The topTen graph is interesting, because it seems that all the DDD governments occurred in the 2021-2022 session years while all the RRR governments occurred in the 2023 session. They tell a similar story as the previous topTen density graph.
 
 
+Finally, I created a bar chart to order the top ten states by rate of passage, colored by party makeup.
+```{r}
+ggplot(topTen) +
+  aes(x = reorder(abbs, -rate.of.passage), y = rate.of.passage, fill = govt.makeup) +
+  geom_col() +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() +
+  xlab("States")
+```
+It seems here that the top ten governments are pretty evenly split between RRR and DDD governments, with DDD governments occupying the very top spot. However, the top half of the ten are mostly occupied by RRR, and the bottom half by DDD. There is one split government, and it is a DDR state.
 
 ## Conclusion
 
-Answer your research question using the data sets and visualizations you created. 
+My research question was: Does the party makeup of state legislatures and their respective governorships have a relationship with the efficacy of these state governments?
+
+My answer is yes. According to my density graphs, united governments more commonly have a higher rate of passage than their split counterparts. DDD governments have the highest density of high rates of passage, followed by RRR governments. The bar charts also show that the top ten most efficient state governments are mostly populated by united governments, with only one split government, with the highest performing government being DDD. Therefore I can conclude that the highest performing government split is DDD, followed by RRR, then DDR and finally RRD.

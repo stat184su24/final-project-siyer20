@@ -75,7 +75,7 @@ summary(govtMakeup)
 
 str(govtMakeup)
 
-
+#joining data
 allData <-
   billPassage %>%
   inner_join( govtMakeup)
@@ -93,7 +93,7 @@ allData
 ```
 
 ```{r}
-
+#initial visual examination
 ggplot(data = allData, mapping = aes(x = govt.makeup, y = rate.of.passage, fill = govt.makeup)) +
   geom_boxplot(na.rm = TRUE, linewidth = 0.2) +
   theme_bw() 
@@ -105,8 +105,10 @@ ggplot(data = allData,mapping = aes(x = Session.Years, y = rate.of.passage, fill
 Observations: From these inital box plots, it looks like there may be a few outliers in our dataset which may skew our data and affect our conclusion. After some inspection, I see that there is only one state whose session year occurs from 2022-2023. I got rid of the 2022-2023 state and the RRD outliers, and remade the graphs.
 
 ```{r}
+#removing outliers
 allData <- allData[-c(39,32,17), ]
 
+#final examination
 ggplot(data = allData, mapping = aes(x = govt.makeup, y = rate.of.passage, fill = govt.makeup)) +
   geom_boxplot(na.rm = TRUE, linewidth = 0.2) +
   theme_bw() 
@@ -114,12 +116,16 @@ ggplot(data = allData, mapping = aes(x = govt.makeup, y = rate.of.passage, fill 
 ggplot(data = allData,mapping = aes(x = Session.Years, y = rate.of.passage, fill = Session.Years)) +
   geom_boxplot(na.rm = TRUE, linewidth = 0.2) +
   theme_bw()
+
+#taking another look at data
+allData
 ```
-The outliers are gone! This is also a good first look at our data. Just from these box plots, I can see that governments with an RRD split are very ineffective at passing laws. The governments with the highest passing rates are the united party governments, with DDD seeming to be more effective than RRR. It's interesting that DDR split governments seem significantly more effective than RRD governments.
+The big outliers are gone! This is also a good first look at our data. Just from these box plots, I can see that governments with an RRD split are very ineffective at passing laws. The governments with the highest passing rates are the united party governments, with DDD seeming to be more effective than RRR. It's interesting that DDR split governments seem significantly more effective than RRD governments. The governments in the 2023 session also seem more effective than the other one.
 
 I also want to create a new topTen dataset which has the top ten states with the highest rate of passage.
 
 ```{r}
+#creating topTen dataset
 allData %>%
   group_by(rate.of.passage)%>%
   summarize(abbs) %>%
@@ -131,6 +137,18 @@ topTen <- allData %>%
 
 topTen
 ```
+Finally, I want to create a table of average rates of passage per government type.
+```{r}
+#creating dataset of averages
+avgMakeup <- allData %>%
+  group_by(govt.makeup)%>%
+  summarize(avgBI= mean(bills.introduced),
+            avgBP = mean(bills.passed),
+            avgROP = mean(rate.of.passage)) %>%
+  arrange(desc(avgROP))
+
+avgMakeup
+```
 
 ## Data Visualization
 
@@ -138,67 +156,81 @@ Include R code and written explanation for your data visualization(s) with at le
 
 I first want to look at how much each govt makeup appears in the datasets.
 ```{r}
+#boxplot for top ten staes
 ggplot(data = topTen, mapping = aes(x = govt.makeup)) +
   geom_bar(fill = "purple") +
   theme_bw()
 
+#box plot for all states
 ggplot(data = allData, mapping = aes(x = govt.makeup)) +
   geom_bar(fill = "navy") +
   theme_bw()
 ```
 In the top ten states, it appears that totally unified governments make up the majority. It's interesting that in the allData bar chart, there are more RRD governments than DDR governments, and yet no RRD governments in the top ten. Otherwise, the makeup of the top ten correlates with the makeup of all the data.
 
-Then, I want to look at general density plots for all of the data and then the topTen dataset.
+Then, I want to look at an overlaid general density plot for rate of passage.
 ```{r}
-ggplot(allData) +
-  aes(x = rate.of.passage, colour = govt.makeup) +
-  geom_density(alpha = 0.7) +
+ggplot() + 
+  geom_density(data = allData, mapping = aes(x = rate.of.passage, colour = govt.makeup), alpha = 0.7) +
+  geom_density(data = topTen, mapping = aes(x = rate.of.passage, fill = govt.makeup), alpha = 0.1) +
   scale_fill_hue(direction = 1) +
   theme_minimal()
-
-ggplot(topTen) +
-  aes(x = rate.of.passage, colour = govt.makeup) +
-  geom_density(alpha = 0.7) +
-  scale_fill_hue(direction = 1) +
-  theme_minimal() 
-
 ```
 In the allData graph, there is a large spike that implies that RRD governments mostly have a ~0.13 passage rate. This graph also shows that, at the upper end of passage rates, there are more DDD governments. Every other type tapers down. There is a slight bump around the 0.15 mark for RRR governments, indicating that more of them perform at that level. 
 For the topTen graph, the DDD governments create a cosine looking graph, indicating that they perform either extremely well or extremely poorly. The RRR government is the opposite, as most of them perform middlingly with a drop off towards the end, indicating that no RRR government outperforms a DDD government.
 
-I can also remake the density graphs with session years to see if they play any part.
+I can also remake the density graph with session years to see if they play any part.
 ```{r}
-ggplot(allData) +
-  aes(x = rate.of.passage, colour = govt.makeup) +
-  geom_density(alpha = 0.7) +
+ggplot() + 
+  geom_density(data = allData, mapping = aes(x = rate.of.passage, colour = govt.makeup), alpha = 0.7) +
+  geom_density(data = topTen, mapping = aes(x = rate.of.passage, fill = govt.makeup), alpha = 0.1) +
   scale_fill_hue(direction = 1) +
   theme_minimal() +
-  facet_wrap(vars(Session.Years))
+  facet_wrap(vars(Session.Years)) #adding facet
 
-ggplot(topTen) +
-  aes(x = rate.of.passage, colour = govt.makeup) +
-  geom_density(alpha = 0.7) +
-  scale_fill_hue(direction = 1) +
-  theme_minimal() +
-  facet_wrap(vars(Session.Years))
 ```
 In the allData graph, the 2021-2022 facet looks very similar to the graph from before. The 2023 facet is interesting, in that only unified governments are in it. RRR governments in 2023 generally seem to perform poorly as there are spikes in the 0.05-0.15 range, while the DDD governments are more spread out. At the higher end of the passage rates, DDD governments do seem to com out on top.
 The topTen graph is interesting, because it seems that all the DDD governments occurred in the 2021-2022 session years while all the RRR governments occurred in the 2023 session. They tell a similar story as the previous topTen density graph.
 
 
-Finally, I created a bar chart to order the top ten states by rate of passage, colored by party makeup.
 ```{r}
+#bills introduces vs bills passed, colored by govt makeup
+ggplot(allData) +
+  aes(
+    x = bills.introduced,
+    y = bills.passed,
+    colour = govt.makeup
+  ) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) + 
+  scale_color_hue(direction = 1) +
+  theme_minimal()
+
+```
+I thought it could also be interesting to explore the relationship between the number of bills introduced versus the number passed. It seems that majority D governments(DDD, DDR) tend to introduce more bills. However, DDD governments can keep up with bills introduced while DDR governmetns fall short. Majority R governments don't introduce a lot, but pass a good portion of what they introduce.
+
+Finally, I created a bar chart to order the top ten states by rate of passage, colored by party makeup, as well as a bar chart of the different governments with their average rates of passage.
+```{r}
+#bar chart of top ten states, organized by rate of passage
 ggplot(topTen) +
   aes(x = reorder(abbs, -rate.of.passage), y = rate.of.passage, fill = govt.makeup) +
   geom_col() +
   scale_fill_hue(direction = 1) +
   theme_minimal() +
   xlab("States")
+
+#bar chart of different govt makeups, organized by rate of passage
+ggplot(avgROP) +
+  aes(x = reorder(govt.makeup, -averageROP), y = averageROP) +
+  geom_col(fill = "purple") +
+  scale_fill_hue(direction = 1) +
+  theme_minimal() +
+  xlab("States")
 ```
-It seems here that the top ten governments are pretty evenly split between RRR and DDD governments, with DDD governments occupying the very top spot. However, the top half of the ten are mostly occupied by RRR, and the bottom half by DDD. There is one split government, and it is a DDR state.
+It seems here that the top ten governments are pretty evenly split between RRR and DDD governments, with DDD governments occupying the very top spot. However, the top half of the ten are mostly occupied by RRR, and the bottom half by DDD. There is one split government, and it is a DDR state. The average bar chart shows that RRR and DDD governments are neck at neck, with very similar mean rates of passage. They are followed by DDR, with RRD being least effective.
 
 ## Conclusion
 
 My research question was: Does the party makeup of state legislatures and their respective governorships have a relationship with the efficacy of these state governments?
 
-My answer is yes. According to my density graphs, united governments more commonly have a higher rate of passage than their split counterparts. DDD governments have the highest density of high rates of passage, followed by RRR governments. The bar charts also show that the top ten most efficient state governments are mostly populated by united governments, with only one split government, with the highest performing government being DDD. Therefore I can conclude that the highest performing government split is DDD, followed by RRR, then DDR and finally RRD.
+My answer is yes. According to my density graphs, united governments more commonly have a higher rate of passage than their split counterparts. DDD governments have the highest density of high rates of passage, followed by RRR governments. The bar charts also show that the top ten most efficient state governments are mostly populated by united governments, with only one split government, with the highest performing government being DDD. When looking at the means, it looks like RRR and DDD governments are essentially tied for most efficient, indicating that united governments are more effective than split governments.

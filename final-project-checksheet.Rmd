@@ -1,7 +1,7 @@
 ---
 title: 'Final Project: Guidance Document and Checksheet'
-author: "Author Name(s)"
-date: "Due June 26, 2023"
+author: "Sangeeta"
+date: "8/5/24"
 output:  html_notebook
 ---
 
@@ -23,10 +23,10 @@ The official rubric can be found on the "Submit Final Project Report" on Canvas.
 *Description: (1) Analysis includes at least two different data sources. (2) Primary data source may NOT be loaded from an R package--though supporting data may. (3) Access to all data sources is contained within the analysis. (4) All imported data is inspected at beginning of analysis using one or more R functions: e.g., str, glimpse, head, tail, names, nrow, etc*
 
 (A) .Rmd Line numbers where at least two different data sources are imported:  
-
+44, 52
 
 (B) .Rmd Line numbers for inspecting data intake:  
-
+68,70,74,76
 
 ### Data Wrangling (5 out of 7 required)
 
@@ -34,12 +34,13 @@ The official rubric can be found on the "Submit Final Project Report" on Canvas.
 
 
 (A) .Rmd Line number(s) for general data wrangling: 
-
+109, 129, 134, 143
 
 (B) .Rmd Line number(s) for a join operation: 
-
+81
 
 (C) .Rmd Line number(s) for use of reduction and/or transformation functions: 
+145
 
 (D) .Rmd Line number(s) for a pivot_wider or pivot_longer operation (or equivalent):
 
@@ -52,7 +53,7 @@ The official rubric can be found on the "Submit Final Project Report" on Canvas.
 
 (G) .Rmd Line number(s) for use of loops and/or control flow: 
 
-
+I didn't really have any way of incorporating these last few into my final. 
   
 
 ### Data Visualization (3 of 5 required)
@@ -60,11 +61,14 @@ The official rubric can be found on the "Submit Final Project Report" on Canvas.
 *Description: Students need not use every function and method introduced in STAT 184, but clear demonstration of proficiency should include a range of useful of data visualizations that are (1) relevant to stated research question for the analysis, (2) include at least one effective display of many--at least 3--variables, and (3) include 3 of the following 5 visualization techniques learned in STAT 184: (+) use of multiple geoms such as points, density, lines, segments, boxplots, bar charts, histograms, etc (+) use of multiple aesthetics--not necessarily all in the same graph--such as color, size, shape, x/y position, facets, etc (+) layered graphics such as points and accompanying smoother, points and accompanying boxplots, overlaid density distributions, etc (+) leaflet maps (+) decision tree and/or dendograms*
 
 
-(A) .Rmd Line number(s) for use of multiple different geoms on a single plot:  
+(A) .Rmd Line number(s) for use of multiple different geoms:  
+98, 161, 174, 204, 205
 
 (B) .Rmd Line number(s) for use of multiple aesthetics:  
+97, 174, 189
 
 (C) .Rmd Line number(s) for use of layered graphics:  
+173, 184, 198
 
 (D) .Rmd Line number(s) for use of maps:  
 

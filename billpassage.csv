@@ -1,0 +1,48 @@
+﻿State,abbs,bills introduced,bills passed,rate of passage
+California,CA,4526,1767,0.3904
+Wisconsin,WI,2305,266,0.1154
+Nevada,NV,1044,533,0.5105
+Oklahoma,OK,3140,377,0.1201
+Mississippi,MS,2973,421,0.1416
+Connecticut,CT,3193,235,0.0736
+Texas,TX,6927,1053,0.152
+Washington,WA,2126,629,0.2959
+Kansas,KS,1330,216,0.1624
+Alaska,AK,688,106,0.1541
+Utah,UT,863,534,0.6188
+Nebraska,NE,1372,352,0.2566
+Hawaii,HI,3132,263,0.084
+Montana,MT,1534,777,0.5065
+Idaho,ID,635,338,0.5323
+Vermont,VT,1033,202,0.1955
+Virginia,VA,2062,811,0.3933
+Delaware,DE,1147,528,0.4603
+Illinois,IL,10123,1123,0.1109
+West Virginia,WV,2317,332,0.1433
+Georgia,GA,2334,862,0.3693
+South Carolina,SC,1982,238,0.1201
+Michigan,MI,3802,445,0.117
+Maryland,MD,2498,776,0.3106
+Wyoming,WY,353,117,0.3314
+Oregon,OR,275,127,0.4618
+Colorado,CO,657,507,0.7717
+Rhode Island,RI,2026,504,0.2488
+Arizona,AZ,1613,388,0.2405
+Iowa,IA,2499,339,0.1357
+MInnesota,MN,9515,99,0.0104
+Louisiana,LA,1582,776,0.4905
+South Dakota,SD,553,247,0.4467
+Florida,FL,1694,333,0.1966
+Pennsylvania,PA,4108,293,0.0713
+North Dakota,ND,847,502,0.5927
+Indiana,IN,1154,249,0.2158
+Kentucky,KY,876,176,0.2009
+New Jersey,NJ,9980,483,0.0484
+New York,NY,19634,1667,0.0849
+Alabama,AL,871,394,0.4524
+North Carolina,NC,2036,267,0.1311
+Maine,ME,2041,969,0.4748
+New Hampshire,NH,894,241,0.2696
+New Mexico,NM,1084,206,0.19
+Missouri,MI,2482,356,0.1434
+Tennessee,TN,6065,2454,0.4046
